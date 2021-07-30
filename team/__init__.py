@@ -26,8 +26,10 @@ def create_app(test_config=None):
     db.init_app(app)
 
     from team.auth import auth
+    from team.views import views
 
     app.register_blueprint(auth)
+    app.register_blueprint(views)
 
     create_database(app.instance_path, app)
 
