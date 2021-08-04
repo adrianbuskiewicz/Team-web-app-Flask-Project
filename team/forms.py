@@ -3,6 +3,7 @@ from wtforms import StringField, SelectField, PasswordField, FileField, SubmitFi
 from wtforms.fields.html5 import DateField
 from wtforms_components import TimeField
 from wtforms.validators import Length, DataRequired, Email
+from flask import flash
 
 
 positions_choices = [('goalkeeper', 'Goalkeeper'),
@@ -40,7 +41,12 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Login')
 
 
-class ChangeProfileInfoForm(FlaskForm):
+class UpdateProfileForm(FlaskForm):
     birth_date = DateField('Birth date', validators=[DataRequired()], default=None)
-    avatar = FileField('Your photo')
     submit = SubmitField('Confirm changes')
+
+
+def form_errors(form):
+    if form.errors != {}:
+        for err_msg in form.errors.values():
+            flash(f'{err_msg[0]}', category='danger')
