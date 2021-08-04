@@ -1,0 +1,56 @@
+<!-- Modal Change Meeting -->
+<div class="modal fade" id="Modal-ChangeMeeting-{{ meeting.id }}" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="ChangeMeetingModalLabel">
+          Change:
+          {{ meeting.type.title() }} ({{ meeting.date }} - {{ meeting.hour }})
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        {{ update_form.date.label }}
+        {{ update_form.date(class="form-control", value=meeting.date) }}
+        <br/>
+        {{ update_form.hour.label }}
+        {{ update_form.hour(class="form-control", value=meeting.hour) }}
+        <br/>
+        {{ update_form.locality.label }}
+        {{ update_form.locality(class="form-control", value=meeting.locality) }}
+        <br/>
+        {{ update_form.type.label }}
+        {{ update_form.type(class="form-control", default=meeting.type) }}
+        <br/>
+        {{ update_form.pitch.label }}
+        {{ update_form.pitch(class="form-control", value=meeting.pitch) }}
+        <br/>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Meeting -->
+<div class="modal fade" id="Modal-DeleteMeeting-{{ meeting.id }}" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="DeleteMeetingModalLabel">Delete Meeting</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <hp>Are you sure you want to delete meeting?</hp>
+      </div>
+      <div class="modal-footer">
+        <div class="text-center">
+          <button type="button" class="btn btn-danger">Confirm</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Dismiss</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
