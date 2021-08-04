@@ -2,8 +2,9 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, PasswordField, FileField, SubmitField, IntegerField
 from wtforms.fields.html5 import DateField
 from wtforms_components import TimeField
-from wtforms.validators import Length, DataRequired, Email
+from wtforms.validators import Length, DataRequired, Email, ValidationError
 from flask import flash
+from team.models import User, Profile
 
 
 positions_choices = [('goalkeeper', 'Goalkeeper'),
@@ -17,6 +18,16 @@ pitch_choices = [('training_ground', 'Training Ground'), ('stadium', 'Stadium')]
 
 
 class AddPlayerForm(FlaskForm):
+    def validate_email_address(self, email_address_to_check):
+        email_address = User.query.filter_by(email_address=email_address_to_check.data).first()
+        if email_address:
+            raise ValidationError('Email address already exists!')
+
+    def validate_number(self, number_to_check):
+        number = Profile.query.filter_by(number=number_to_check.data).first()
+        if number:
+            raise ValidationError('Some player already has this number!')
+
     email_address = StringField('Email address', validators=[Length(min=2, max=40), DataRequired(), Email()])
     first_name = StringField('First name', validators=[Length(min=2, max=20), DataRequired()])
     last_name = StringField('Last name', validators=[Length(min=2, max=20), DataRequired()])
@@ -46,7 +57,12 @@ class UpdateProfileForm(FlaskForm):
     submit = SubmitField('Confirm changes')
 
 
+class DeleteForm(FlaskForm):
+    submit = SubmitField('Confirm')
+
+
 def form_errors(form):
     if form.errors != {}:
         for err_msg in form.errors.values():
             flash(f'{err_msg[0]}', category='danger')
+
