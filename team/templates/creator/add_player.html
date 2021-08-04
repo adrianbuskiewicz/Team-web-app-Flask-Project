@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Add Player
+{% endblock %}
+
+{% block content %}
+<div class="container text-center">
+  <h5 class="display-5">Add Player</h5>
+</div>
+<div class="container">
+    <form method="POST" class="form-control">
+        {{ add_player_form.hidden_tag() }}
+        
+        {{ add_player_form.email_address.label }}
+        {{ add_player_form.email_address(class="form-control") }}
+        <br/>
+        {{ add_player_form.first_name.label }}
+        {{ add_player_form.first_name(class="form-control") }}
+        <br/>
+        {{ add_player_form.last_name.label }}
+        {{ add_player_form.last_name(class="form-control") }}
+        <br/>
+        {{ add_player_form.position.label }}
+        {{ add_player_form.position(class="form-control") }}
+        <br/>
+        {{ add_player_form.number.label }}
+        {{ add_player_form.number(class="form-control") }}
+        <br/>
+        <div class="text-center">
+            {{ add_player_form.submit(class="btn btn-lg btn-block btn-primary") }}
+        </div>
+    </form>
+</div>
+{% endblock %}
