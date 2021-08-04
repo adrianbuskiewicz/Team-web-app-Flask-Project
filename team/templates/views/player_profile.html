@@ -1,10 +1,109 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block title %}
+Profile
+{% endblock %}
+
+{% block banner %}
+{% if current_user.profile.id == player.id %}
+My Profile
+{% else %}
+{{ player.first_name }} {{ player.last_name }}
+{% endif %}
+
+{% endblock %}
+
+{% block content %}
+</div>
+<br/>
+<div class="container">
+    <div class="main-body">
+        <div class="row gutters-sm">
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex flex-column align-items-center text-center">
+                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" width="150">
+                            <div class="mt-3">
+                                <h4>{{ player.first_name }} {{ player.last_name }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <h6 class="mb-0">Position</h6>
+                            </div>
+                            <div class="col-sm-5 text-secondary">
+                                {{ player.position.title() }}
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <h6 class="mb-0">Number</h6>
+                            </div>
+                            <div class="col-sm-5 text-secondary">
+                                {{ player.number }}
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <h6 class="mb-0">Birth Date</h6>
+                            </div>
+                            <div class="col-sm-5 text-secondary">
+                                {{ player.birth_date }}
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <h6 class="mb-0">Attendance (%)</h6>
+                            </div>
+                            <div class="col-sm-5 text-secondary">
+                                60%
+                            </div>
+                        </div>
+                        {% if current_user.profile.id == player.id %}
+                            <hr>
+                            <div class="row">
+                                <div class="btn btn-danger">
+                                  Edit profile information!
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<table class="table table-bordered text-center">
+  <thead>
+    <tr>
+      <th scope="col">Date</th>
+      <th scope="col">Type</th>
+      <th scope="col">Attendance</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for meeting in meetings %}
+    <tr>
+      <td>{{ meeting.date }}</td>
+      <td>{{ meeting.type.title() }}</td>
+      <td>
+        <div class="btn btn-success disabled" style="cursor:default;">
+          Present
+        </div>
+      </td>
+    </tr>
+    {% endfor %}
+    </tr>
+  </tbody>
+</table>
+{% endblock %}
