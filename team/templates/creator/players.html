@@ -5,12 +5,20 @@ Add Player
 {% endblock %}
 
 {% block banner %}
-Add Player
+Players
 {% endblock %}
 
 {% block content %}
 <div class="container">
-    <div>
+    <div class="text-center">
+        <button class="btn btn-lg btn-block btn-primary" type="button"
+                data-bs-toggle="collapse" data-bs-target="#collapsePlayerCreator"
+                aria-expanded="false" aria-controls="collapsePlayerCreator">
+        Create new player!
+        </button>
+    </div>
+    <br/>
+    <div class="collapse" id="collapsePlayerCreator">
         <form method="POST" class="form-control">
             {{ add_player_form.hidden_tag() }}
             
@@ -30,44 +38,46 @@ Add Player
             {{ add_player_form.number(class="form-control") }}
             <br/>
             <div class="text-center">
-                {{ add_player_form.submit(class="btn btn-lg btn-block btn-primary") }}
+                {{ add_player_form.submit_create(class="btn btn-lg btn-block btn-success") }}
             </div>
         </form>
     </div>
 </div>
 <br/>
-<br/>
-<br/>
 <div class="container">
-    <table class="table table-bordered">
-        <thead class="text-center">
+    <table class="table table-striped" style="border-collapse: separate; border-spacing: 0 1em;">
+        <thead class="table-dark">
             <tr>
                 <th scope="col">Position</th>
                 <th scope="col">First Name</th>
                 <th scope="col">Last Name</th>
                 <th scope="col">Number</th>
                 <th scope="col">Birth Date</th>
-                <th scope="col">Actions</th>
+                <th scope="col" class="text-center">Actions</th>
             </tr>
         </thead>
         <tbody>
             {% for player in players %}
             {% include 'includes/players_modals.html' %}
                 <tr>
-                    <td>{{ player.position.title() }}</td>
-                    <td>{{ player.first_name }}</td>
-                    <td>{{ player.last_name }}</td>
-                    <td>{{ player.number }}</td>
-                    <td>{{ player.birth_date }}</td>
+                    <td>{{ player.profile.position.title() }}</td>
+                    <td>{{ player.profile.first_name }}</td>
+                    <td>{{ player.profile.last_name }}</td>
+                    <td>{{ player.profile.number }}</td>
+                    <td>{{ player.profile.birth_date }}</td>
                     {% if current_user.user_type == 'player' %}
-                    <td class="text-center">
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Modal-ChangePlayer-{{ player.id }}">
-                            Change
-                        </button>
-                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#Modal-DeletePlayer-{{ player.id }}">
-                            Delete
-                        </button>
-                    </td>
+                        <td class="text-center">
+                            <button class="btn btn-primary"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#Modal-ChangePlayer-{{ player.user_id }}">
+                                Change
+                            </button>
+                            <button class="btn btn-danger"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#Modal-DeletePlayer-{{ player.user_id }}">
+                                Delete
+                            </button>
+                        </td>
                     {% endif %}
                 </tr>
             {% endfor %}
