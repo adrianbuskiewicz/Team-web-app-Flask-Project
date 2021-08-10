@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Home Page
+{% endblock %}
+
+{% block banner %}
+<h2>{{ meeting.type.title() }}</h2>
+<h3>{{ meeting.date }}</h3>
+<h5>{{ meeting.hour }} {{ meeting.day }}</h5>
+{% endblock %}
+
+
+{% block content %}
+<div class="container">
+    <table class="table table-bordered text-center" style="border-collapse: separate; border-spacing: 0 0.5em;">
+        <thead>
+        <tr class="table-dark">
+            <td colspan="2"><h5>Attendance</h5></td>
+        </tr>
+        <tr>
+            <td class="table-success">
+                Present
+            </td>
+            <td class="table-danger">
+                Absent
+            </td>
+        </tr>
+        </thead>
+    </table>
+    {% if current_user.user_type == 'player' %}
+    <div class="text-center">
+        <a href="url_for{{  }}" class="btn btn-primary">Update</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
