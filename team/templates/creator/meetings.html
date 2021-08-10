@@ -1,44 +1,52 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Create Meeting
+Meetings creator
 {% endblock %}
 
 {% block banner %}
-Create Meeting
+Meetings
 {% endblock %}
 
 {% block content %}
 <div class="container">
-    <form method="POST" class="form-control">
-        {{ create_meeting_form.hidden_tag() }}
-        
-        {{ create_meeting_form.date.label }}
-        {{ create_meeting_form.date(class="form-control") }}
-        <br/>
-        {{ create_meeting_form.hour.label }}
-        {{ create_meeting_form.hour(class="form-control") }}
-        <br/>
-        {{ create_meeting_form.locality.label }}
-        {{ create_meeting_form.locality(class="form-control") }}
-        <br/>
-        {{ create_meeting_form.type.label }}
-        {{ create_meeting_form.type(class="form-control") }}
-        <br/>
-        {{ create_meeting_form.pitch.label }}
-        {{ create_meeting_form.pitch(class="form-control") }}
-        <br/>
-        <div class="text-center">
-            {{ create_meeting_form.submit(class="btn btn-lg btn-block btn-primary") }}
-        </div>
-    </form>
+    <div class="text-center">
+        <button class="btn btn-lg btn-block btn-primary" type="button"
+                data-bs-toggle="collapse" data-bs-target="#collapseMeetingCreator"
+                aria-expanded="false" aria-controls="collapseMeetingCreator">
+        Create new meeting!
+        </button>
+    </div>
+    <br/>
+    <div class="collapse" id="collapseMeetingCreator">
+        <form method="POST" class="form-control">
+            {{ create_meeting_form.csrf_token }}
+            
+            {{ create_meeting_form.date.label }}
+            {{ create_meeting_form.date(class="form-control") }}
+            <br/>
+            {{ create_meeting_form.hour.label }}
+            {{ create_meeting_form.hour(class="form-control") }}
+            <br/>
+            {{ create_meeting_form.locality.label }}
+            {{ create_meeting_form.locality(class="form-control") }}
+            <br/>
+            {{ create_meeting_form.type.label }}
+            {{ create_meeting_form.type(class="form-control") }}
+            <br/>
+            {{ create_meeting_form.pitch.label }}
+            {{ create_meeting_form.pitch(class="form-control") }}
+            <br/>
+            <div class="text-center">
+                {{ create_meeting_form.submit_create(class="btn btn-lg btn-block btn-success") }}
+            </div>
+        </form>
+    </div>
 </div>
 <br/>
-<br/>
-<br/>
 <div class="container">
-    <table class="table table-bordered">
-        <thead class="text-center">
+    <table class="table table-striped" style="border-collapse: separate; border-spacing: 0 0.5em;">
+        <thead class="table-dark">
             <tr>
                 <th scope="col">Date</th>
                 <th scope="col">Day</th>
@@ -46,7 +54,7 @@ Create Meeting
                 <th scope="col">Pitch</th>
                 <th scope="col">Locality</th>
                 <th scope="col">Type</th>
-                <th scope="col">Actions</th>
+                <th scope="col" class="text-center">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -60,13 +68,20 @@ Create Meeting
                     <td>{{ meeting.locality }}</td>
                     <td>{{ meeting.type.title() }}</td>
                     {% if current_user.user_type == 'player' %}
-                    <td>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Modal-ChangeMeeting-{{ meeting.id }}">
+                    <td class="text-center">
+                        <button class="btn btn-primary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#Modal-ChangeMeeting-{{ meeting.meeting_id }}">
                             Change
                         </button>
-                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#Modal-DeleteMeeting-{{ meeting.id }}">
+                        <button class="btn btn-danger"
+                                data-bs-toggle="modal"
+                                data-bs-target="#Modal-DeleteMeeting-{{ meeting.meeting_id }}">
                             Delete
                         </button>
+                        <a class="btn btn-dark" href="{{ url_for('creator.update_attendance_page', meeting_id=meeting.meeting_id) }}">
+                            Attendance
+                      </a>
                     </td>
                     {% endif %}
                 </tr>
