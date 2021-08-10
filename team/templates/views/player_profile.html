@@ -5,7 +5,7 @@ Profile
 {% endblock %}
 
 {% block banner %}
-{% if current_user.profile.id == player.id %}
+{% if current_user.profile.profile_id == player.profile_id %}
 My Profile
 {% else %}
 {{ player.first_name }} {{ player.last_name }}
@@ -69,7 +69,7 @@ My Profile
                                 60%
                             </div>
                         </div>
-                        {% if current_user.profile.id == player.id %}
+                        {% if current_user.profile.profile_id == player.profile_id %}
                             <hr>
                             <div class="row">
                                 <div class="btn btn-danger">
@@ -83,6 +83,7 @@ My Profile
         </div>
     </div>
 </div>
+<div class="container">
 <table class="table table-bordered text-center">
   <thead>
     <tr>
@@ -106,4 +107,5 @@ My Profile
     </tr>
   </tbody>
 </table>
+</div>
 {% endblock %}
