@@ -18,10 +18,20 @@ class User(db.Model, UserMixin):
         return self.user_id
 
 
-attendance = db.Table('attendance',
-                      db.Column('profile_id', db.Integer, db.ForeignKey('profile.profile_id')),
-                      db.Column('meeting_id', db.Integer, db.ForeignKey('meeting.meeting_id')),
-                      )
+attendance_table = db.Table('attendance_table',
+                            db.Column('meeting_id', db.Integer, db.ForeignKey('meeting.meeting_id')),
+                            db.Column('profile_id', db.Integer, db.ForeignKey('profile.profile_id')),
+                            )
+
+present_likes = db.Table('present_likes',
+                         db.Column('meeting_id', db.Integer, db.ForeignKey('meeting.meeting_id')),
+                         db.Column('profile_id', db.Integer, db.ForeignKey('profile.profile_id')),
+                         )
+
+absent_likes = db.Table('absent_likes',
+                        db.Column('meeting_id', db.Integer, db.ForeignKey('meeting.meeting_id')),
+                        db.Column('profile_id', db.Integer, db.ForeignKey('profile.profile_id')),
+                        )
 
 
 class Profile(db.Model):
@@ -31,20 +41,45 @@ class Profile(db.Model):
     birth_date = db.Column(db.Date, default=None)
     position = db.Column(db.String(20))
     number = db.Column(db.String(2), unique=True)
-    owner_id = db.Column(db.Integer, db.ForeignKey('user.user_id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'))
 
 
 class Meeting(db.Model):
     meeting_id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Date)
-    hour = db.Column(db.Time)
+    hour = db.Column(db.String(5))
     day = db.Column(db.String(15))
     type = db.Column(db.String(20))
     locality = db.Column(db.String(50))
     pitch = db.Column(db.String(30))
-    meeting_attendance = db.relationship('Meeting',
-                                         secondary=attendance,
-                                         lazy='dynamic')
+    attendance = db.relationship('Profile',
+                                 secondary=attendance_table,
+                                 lazy='dynamic')
+    present_players = db.relationship('Profile',
+                                      secondary=present_likes,
+                                      lazy='dynamic')
+    absent_players = db.relationship('Profile',
+                                     secondary=absent_likes,
+                                     lazy='dynamic')
+
+
+def delete_object(request_val, model, obj_id):
+    item_to_delete = request.form.get(request_val)
+    del_item = model.query.filter_by(**{obj_id: item_to_delete}).first()
+    if del_item:
+        db.session.delete(del_item)
+        db.session.commit()
+
+
+def add_to_table(request_val, model, meeting, table, obj_id):
+    record_id = request.form.get(request_val)
+    record_to_add = model.query.filter_by(**{obj_id: record_id}).first()
+    getattr(meeting, table).append(record_to_add)
+    db.session.commit()
+
+
+def del_from_table():
+    pass
 
 
 def usertype_required(user_type):
@@ -56,15 +91,5 @@ def usertype_required(user_type):
                 flash("You are not a coach!")
                 return redirect(url_for('views.home_page'))
             return f(*args, **kwargs)
-
         return wrapped
-
     return wrapper
-
-
-def delete_object(request_val, table, obj_id):
-    item_to_delete = request.form.get(request_val)
-    del_item = table.query.filter_by(**{obj_id: item_to_delete}).first()
-    if del_item:
-        db.session.delete(del_item)
-        db.session.commit()
