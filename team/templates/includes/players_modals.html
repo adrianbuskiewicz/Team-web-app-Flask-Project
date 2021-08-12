@@ -19,6 +19,7 @@
                     {{ update_form.last_name(class="form-control", value=player.profile.last_name) }}
                     <br/>
                     {{ update_form.position.label }}
+                    {{ update_form.position.process_data(player.profile.position) }}
                     {{ update_form.position(class="form-control", value=player.profile.position.title()) }}
                     <br>
                     {{ update_form.number.label }}

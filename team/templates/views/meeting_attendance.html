@@ -1,37 +1,80 @@
 {% extends 'base.html' %}
-
 {% block title %}
 Home Page
 {% endblock %}
-
 {% block banner %}
 <h2>{{ meeting.type.title() }}</h2>
-<h3>{{ meeting.date }}</h3>
-<h5>{{ meeting.hour }} {{ meeting.day }}</h5>
+<h3>{{ meeting.day }} - {{ meeting.hour }} </h3>
+<h5>{{ meeting.date.strftime("%d/%m/%Y") }}</h5>
 {% endblock %}
-
-
 {% block content %}
 <div class="container">
     <table class="table table-bordered text-center" style="border-collapse: separate; border-spacing: 0 0.5em;">
         <thead>
-        <tr class="table-dark">
-            <td colspan="2"><h5>Attendance</h5></td>
-        </tr>
-        <tr>
-            <td class="table-success">
-                Present
-            </td>
-            <td class="table-danger">
-                Absent
-            </td>
-        </tr>
+            <tr class="table-dark">
+                <td>
+                    <h5>Attendance</h5>
+                </td>
+            </tr>
         </thead>
     </table>
-    {% if current_user.user_type == 'player' %}
-    <div class="text-center">
-        <a href="url_for{{  }}" class="btn btn-primary">Update</a>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm">
+                <table class="table table-success table-bordered">
+                    <thead>
+                        <tr class="text-center">
+                            <td>
+                                <h5>Present</h5>
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for present_player in present_players %}
+                        <tr class="text-center">
+                            <td class="table-success">
+                                <a class="text-dark" href="{{ url_for('views.player_profile_page', player_id=present_player.profile_id) }}">
+                                    <h5>{{ present_player.first_name }} {{ present_player.last_name }}</h5>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm">
+                <table class="table table-danger table-bordered">
+                    <thead>
+                        <tr class="text-center">
+                            <td>
+                                <h5>Absent</h5>
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for absent_player in absent_players %}
+                        <tr class="text-center">
+                            <td class="table-danger">
+                                <a class="text-dark" href="{{ url_for('views.player_profile_page', player_id=absent_player.profile_id) }}">
+                                    <h5>{{ absent_player.first_name }} {{ absent_player.last_name }}</h5>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-    {% endif %}
+        <div class="text-center">
+            {% if current_user.user_type == 'player' %}
+                <a href="{{ url_for('creator.update_attendance_page', meeting_id=meeting.meeting_id) }}"
+                    class="btn btn-lg btn-primary">Update</a>
+            {% endif %}
+            <a href="{{ url_for('views.attendance_page') }}"
+                class="btn btn-lg btn-secondary">Back</a>
+        </div>
+    <div class="text-center">
+    </div>
 </div>
 {% endblock %}

@@ -23,9 +23,11 @@
                     {{ update_form.locality(class="form-control", value=meeting.locality) }}
                     <br/>
                     {{ update_form.type.label }}
-                    {{ update_form.type(class="form-control", value=meeting.type) }}
+                    {{ update_form.type.process_data(meeting.type) }}
+                    {{ update_form.type(class="form-control") }}
                     <br/>
                     {{ update_form.pitch.label }}
+                    {{ update_form.pitch.process_data(meeting.pitch) }}
                     {{ update_form.pitch(class="form-control", value=meeting.pitch) }}
                     <br/>
                 </div>

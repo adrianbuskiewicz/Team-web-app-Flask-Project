@@ -51,9 +51,9 @@ Meetings
                 <th scope="col">Date</th>
                 <th scope="col">Day</th>
                 <th scope="col">Hour</th>
-                <th scope="col">Pitch</th>
                 <th scope="col">Locality</th>
                 <th scope="col">Type</th>
+                <th scope="col">Pitch</th>
                 <th scope="col" class="text-center">Actions</th>
             </tr>
         </thead>
@@ -61,12 +61,12 @@ Meetings
             {% for meeting in meetings %}
             {% include 'includes/meetings_modals.html' %}
                 <tr>
-                    <td>{{ meeting.date }}</td>
+                    <td>{{ meeting.date.strftime("%d/%m/%Y") }}</td>
                     <td>{{ meeting.day }}</td>
                     <td>{{ meeting.hour }}</td>
-                    <td>{{ meeting.pitch.title().replace("_"," ") }}</td>
                     <td>{{ meeting.locality }}</td>
                     <td>{{ meeting.type.title() }}</td>
+                    <td>{{ meeting.pitch.title().replace("_"," ") }}</td>
                     {% if current_user.user_type == 'player' %}
                     <td class="text-center">
                         <button class="btn btn-primary"

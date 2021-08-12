@@ -11,7 +11,7 @@ Future Meetings
 {% block content %}
 <div class="container">
     <table class="table" style="border-collapse: separate; border-spacing: 0 1em;">
-        <thead>
+        <thead class="table-dark">
             <tr>
                 <th scope="col">Date</th>
                 <th scope="col">Day</th>
@@ -23,8 +23,8 @@ Future Meetings
         </thead>
         <tbody>
             {% for meeting in meetings %}
-                <tr class="{{ 'table-dark' if meeting.type == 'match' else 'table-light' }}">
-                    <td>{{ meeting.date }}</td>
+                <tr class="{{ 'table-secondary' if meeting.type == 'match' else '' }}">
+                    <td>{{ meeting.date.strftime("%d/%m/%Y") }}</td>
                     <td>{{ meeting.day }}</td>
                     <td>{{ meeting.hour }}</td>
                     <td>{{ meeting.pitch.title().replace("_"," ") }}</td>

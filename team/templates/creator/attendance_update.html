@@ -6,44 +6,50 @@ Update
 
 {% block banner %}
 Update
-<br/>
 <h2>{{ meeting.type.title() }}</h2>
-<h3>{{ meeting.date }}</h3>
-<h5>{{ meeting.hour }} {{ meeting.day }}</h5>
+<h3>{{ meeting.day }} - {{ meeting.hour }} </h3>
+<h5>{{ meeting.date.strftime("%d/%m/%Y") }}</h5>
 {% endblock %}
 
 {% block content %}
 <div class="container">
-    <form method="POST" class="form-control">
 		{% for position in positions %}
-		<table class="table" style="border-collapse: separate; border-spacing: 0 0.2em;">
-			<thead class="table-dark">
-			<h3>{{ position.title() }}s</h3>
-			<td class="text-center">Number</td>
-			<td class="text-center">Name</td>
-			<td class="text-center">Present</td>
+		<table class="table table-bordered table-light" style="border-collapse: separate; border-spacing: 0 0.2em;">
+			<thead class="table-secondary">
+			<td colspan="3"><h4>{{ position.title() }}s</h4></td>
+<!--			<td class="text-center">Number</td>-->
+<!--			<td class="text-center">Name</td>-->
+<!--			<td class="text-center">Presence</td>-->
 			</thead>
-			<tbody class="text-center">
+			<tbody>
 			{% for player in players if player.position == position %}
-				<tr>
-					<td class="col-2"><h5>{{ player.number }}</h5></td>
-					<td class="col-3">
-						<a class="#" href="{{ url_for('views.player_profile_page', player_id=player.profile_id) }}">
+				<tr class="text-center">
+					<th class="col-2"><h5>{{ player.number }}</h5></th>
+					<th class="col-3">
+						<a href="{{ url_for('views.player_profile_page', player_id=player.profile_id) }}">
 							<h5>{{ player.first_name }} {{ player.last_name }}</h5>
 						</a>
-					</td>
+					</th>
 					<td class="col-2">
-						<button class="btn btn-success">X</button>
+						<form method="POST">
+							{{ update_attendance_form.csrf_token }}
+							<input id="present_player" name="present_player"
+								   type="hidden" value="{{ player.profile_id }}">
+							{% if player not in meeting.attendance.all() %}
+								{{ update_attendance_form.submit_update(class="btn btn-success") }}
+							{% else %}
+								{{ update_attendance_form.submit_update(class="btn btn-secondary", value="Undo") }}
+							{% endif %}
+						</form>
 					</td>
 				</tr>
 			</tbody>
 			{% endfor %}
 		</table>
 		 {% endfor %}
-		<div class="text-center">
-    	<button class="btn btn-success">Save</button>
-    	<a href="javascript:history.back()" class="btn btn-dark">Cancel</a>
-		</div>
-    </form>
+    	<div class="text-center">
+			<a href="{{ url_for('views.meeting_attendance_page', meeting_id=meeting.meeting_id) }}"
+                class="btn btn-lg btn-secondary">Close</a>
+    	</div>
 </div>
 {% endblock %}
