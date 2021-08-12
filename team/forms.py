@@ -4,7 +4,8 @@ from wtforms.fields.html5 import DateField
 from wtforms_components import TimeField
 from wtforms.validators import Length, DataRequired, Email, ValidationError
 from flask import flash
-from team.models import User, Profile, Meeting
+from team.models import User, Profile
+from team.dates import today
 
 
 positions_choices = [('goalkeeper', 'Goalkeeper'),
@@ -12,7 +13,9 @@ positions_choices = [('goalkeeper', 'Goalkeeper'),
                      ('midfielder', 'Midfielder'),
                      ('forward', 'Forward')]
 
-type_choices = [('training', 'Training'),('match', 'Match')]
+pitch_positions = ('goalkeeper', 'defender', 'midfielder', 'forward')
+
+type_choices = [('training', 'Training'), ('match', 'Match')]
 
 pitch_choices = [('training_ground', 'Training Ground'), ('stadium', 'Stadium')]
 
@@ -27,7 +30,7 @@ class AddPlayerForm(FlaskForm):
     email_address = StringField('Email address', validators=[Length(min=2, max=40), DataRequired(), Email()])
     first_name = StringField('First name', validators=[Length(min=2, max=20), DataRequired()])
     last_name = StringField('Last name', validators=[Length(min=2, max=20), DataRequired()])
-    birth_date = DateField('Birth date', default=None)
+    birth_date = DateField('Birth date', default=today)
     position = SelectField('Position', choices=positions_choices, validators=[DataRequired()])
     number = IntegerField('Number', validators=[DataRequired()])
     submit_create = SubmitField('Create player!')
@@ -70,8 +73,24 @@ class UpdateMeetingForm(FlaskForm):
     submit_update = SubmitField('Update meeting!')
 
 
+class UpdateAttendanceForm(FlaskForm):
+    submit_update = SubmitField("Present")
+
+
 class DeleteForm(FlaskForm):
     submit_delete = SubmitField('Confirm')
+
+
+class PresentForm(FlaskForm):
+    submit_present = SubmitField("Present")
+
+
+class AbsentForm(FlaskForm):
+    submit_absent = SubmitField("Absent")
+
+
+class UndoForm(FlaskForm):
+    submit_undo = SubmitField("Undo")
 
 
 def form_errors(form):
