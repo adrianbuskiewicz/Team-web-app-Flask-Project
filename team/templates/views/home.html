@@ -12,22 +12,47 @@ Current Week Plan
 <div class="container">
     <div class="card-group">
         {% for meeting in meetings %}
-            <div class="card text-center {{ 'text-white bg-secondary' if meeting.type == 'match' else 'text-dark bg-light' }} mb-3" style="min-width: 20rem;">
+            <div class="card text-center {{ 'text-light bg-secondary' if meeting.type == 'match' else 'text-dark bg-default' }} mb-3" style="min-width: 20rem;">
                 <div class="card-header"><h4>{{ meeting.type.title() }}</h4></div>
               <div class="card-body">
                   <div>
                       <h4 class="card-title">{{ meeting.day }}</h4>
                     <h4 class="card-title">{{ meeting.hour }}</h4>
                       <hr/>
-                    <h5 class="card-title">{{ meeting.date }}</h5>
+                    <h5 class="card-title">{{ meeting.date.strftime("%d/%m/%Y") }}</h5>
                       <hr/>
                   </div>
-                  <h4><b>Locality:</b> {{ meeting.locality }}</h4>
+                  <h4><strong>Locality:</strong> {{ meeting.locality }}</h4>
                   <h6>{{ meeting.pitch.title().replace("_", " ") }}</h6>
                   <hr/>
                   <div>
-                      <button class="btn btn-success">Present</button>
-                      <button class="btn btn-danger">Absent</button>
+                      <button class="btn btn-outline-success">{{ meeting.present_players|list|length }}</button>
+                      <button class="btn btn-outline-danger">{{ meeting.absent_players|list|length }}</button>
+                      <button class="btn btn-outline-secondary">0</button>
+                  </div>
+                  <hr/>
+                  <div>
+                      <form method="POST">
+                          <input id="meeting_id" name="meeting_id"
+                                       type="hidden" value="{{ meeting.meeting_id }}">
+                          
+                          {% if current_user.profile not in (meeting.present_players.all() + meeting.absent_players.all()) %}
+                                {{ present_form.csrf_token }}
+                                <input id="present_player" name="present_player"
+                                       type="hidden" value="{{ current_user.user_id }}">
+                                {{ present_form.submit_present(class="btn btn-success") }}
+                          
+                                {{ absent_form.csrf_token }}
+                                <input id="absent_player" name="absent_player"
+                                       type="hidden" value="{{ current_user.user_id }}">
+                                {{ absent_form.submit_absent(class="btn btn-danger") }}
+                          {% else %}
+                                {{ undo_form.csrf_token }}
+                                <input id="undo_player" name="undo_player"
+                                       type="hidden" value="{{ current_user.user_id }}">
+                                {{ undo_form.submit_undo(class="btn btn-secondary") }}
+                          {% endif %}
+                        </form>
                   </div>
               </div>
             </div>
