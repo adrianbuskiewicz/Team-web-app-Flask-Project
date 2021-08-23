@@ -11,7 +11,7 @@ Log in
 {% block content %}
 <div class="container">
     <form method="POST" class="form-control">
-        {{ login_form.hidden_tag() }}
+        {{ login_form.csrf_token }}
         
         {{ login_form.email_address.label }}
         {{ login_form.email_address(class="form-control") }}
@@ -20,7 +20,9 @@ Log in
         {{ login_form.password(class="form-control") }}
         <br/>
         <div class="text-center">
-            {{ login_form.submit(class="btn btn-lg btn-block btn-primary") }}
+            <a href="{{ url_for('auth.forgot_password_page') }}">Forgot Password?</a>
+            <br/>
+            {{ login_form.submit(class="btn btn-lg btn-block btn-primary m-3") }}
         </div>
     </form>
 </div>
