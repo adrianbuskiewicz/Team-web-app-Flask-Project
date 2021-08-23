@@ -12,7 +12,6 @@
             <form method="POST">
                 <div class="modal-body">
                     {{ update_form.csrf_token }}
-                  
                     {{ update_form.date.label }}
                     {{ update_form.date(class="form-control", value=meeting.date) }}
                     <br/>
@@ -41,7 +40,7 @@
     </div>
 </div>
 
-<!-- Delete Meeting -->
+<!-- Modal Delete Meeting -->
 <div class="modal fade" id="Modal-DeleteMeeting-{{ meeting.meeting_id }}" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">

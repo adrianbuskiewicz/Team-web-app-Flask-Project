@@ -10,26 +10,26 @@ Future Meetings
 
 {% block content %}
 <div class="container">
-    <table class="table" style="border-collapse: separate; border-spacing: 0 1em;">
+    <table class="table table-striped align-middle" style="border-collapse: separate; border-spacing: 0 0.5em;">
         <thead class="table-dark">
             <tr>
                 <th scope="col">Date</th>
                 <th scope="col">Day</th>
                 <th scope="col">Hour</th>
-                <th scope="col">Pitch</th>
                 <th scope="col">Locality</th>
                 <th scope="col">Type</th>
+                <th scope="col">Pitch</th>
             </tr>
         </thead>
         <tbody>
             {% for meeting in meetings %}
                 <tr class="{{ 'table-secondary' if meeting.type == 'match' else '' }}">
-                    <td>{{ meeting.date.strftime("%d/%m/%Y") }}</td>
+                    <td><strong>{{ meeting.date.strftime("%d/%m/%Y") }}</strong></td>
                     <td>{{ meeting.day }}</td>
                     <td>{{ meeting.hour }}</td>
-                    <td>{{ meeting.pitch.title().replace("_"," ") }}</td>
                     <td>{{ meeting.locality }}</td>
                     <td>{{ meeting.type.title() }}</button></td>
+                    <td>{{ meeting.pitch.title().replace("_"," ") }}</td>
                 </tr>
             {% endfor %}
         </tbody>
