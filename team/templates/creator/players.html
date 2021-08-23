@@ -12,8 +12,8 @@ Players
 <div class="container">
     <div class="text-center">
         <button class="btn btn-lg btn-block btn-primary" type="button"
-                data-bs-toggle="collapse" data-bs-target="#collapsePlayerCreator"
-                aria-expanded="false" aria-controls="collapsePlayerCreator">
+            data-bs-toggle="collapse" data-bs-target="#collapsePlayerCreator"
+            aria-expanded="false" aria-controls="collapsePlayerCreator">
         Create new player!
         </button>
     </div>
@@ -21,7 +21,6 @@ Players
     <div class="collapse" id="collapsePlayerCreator">
         <form method="POST" class="form-control">
             {{ add_player_form.hidden_tag() }}
-            
             {{ add_player_form.email_address.label }}
             {{ add_player_form.email_address(class="form-control") }}
             <br/>
@@ -48,45 +47,44 @@ Players
 </div>
 <br/>
 <div class="container">
-    <table class="table table-striped" style="border-collapse: separate; border-spacing: 0 1em;">
-        <thead class="table-dark">
+    {% for position in positions %}
+    <table class="table table-striped text-center" style="border-collapse: separate; border-spacing: 0 0.5em;">
+        <thead class="table-dark align-middle">
+            <h3>{{ position.title() }}s</h3>
             <tr>
-                <th scope="col">Position</th>
+                <th scope="col">Number</th>
                 <th scope="col">First Name</th>
                 <th scope="col">Last Name</th>
-                <th scope="col">Number</th>
                 <th scope="col">Birth Date</th>
                 <th scope="col" class="text-center">Actions</th>
             </tr>
         </thead>
-        <tbody>
-            {% for player in players %}
+        <tbody class="align-middle">
+            {% for player in players if player.profile.position == position %}
             {% include 'includes/players_modals.html' %}
-                <tr>
-                    <td>{{ player.profile.position.title() }}</td>
-                    <td>{{ player.profile.first_name }}</td>
-                    <td>{{ player.profile.last_name }}</td>
-                    <td>{{ player.profile.number }}</td>
-                    <td>{{ player.profile.birth_date }}</td>
-                    {% if current_user.user_type == 'player' %}
-                        <td class="text-center">
-                            <button class="btn btn-primary"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#Modal-ChangePlayer-{{ player.user_id }}">
-                                Change
-                            </button>
-                            <button class="btn btn-danger"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#Modal-DeletePlayer-{{ player.user_id }}">
-                                Delete
-                            </button>
-                        </td>
-                    {% endif %}
-                </tr>
+            <tr>
+                <td><strong>{{ player.profile.number }}</strong></td>
+                <td>{{ player.profile.first_name }}</td>
+                <td>{{ player.profile.last_name }}</td>
+                <td>{{ player.profile.birth_date }}</td>
+                {% if current_user.user_type == 'coach' %}
+                <td class="text-center">
+                    <button class="btn btn-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#Modal-ChangePlayer-{{ player.user_id }}">
+                    Change
+                    </button>
+                    <button class="btn btn-danger"
+                        data-bs-toggle="modal"
+                        data-bs-target="#Modal-DeletePlayer-{{ player.user_id }}">
+                    Delete
+                    </button>
+                </td>
+                {% endif %}
+            </tr>
             {% endfor %}
         </tbody>
     </table>
+    {% endfor %}
 </div>
-
-
 {% endblock %}
