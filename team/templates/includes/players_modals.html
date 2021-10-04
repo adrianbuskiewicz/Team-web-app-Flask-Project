@@ -8,29 +8,31 @@
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form method="POST">
+            <form action="{{ url_for('coach.update_player') }}" method="POST">
                 <div class="modal-body">
-                    {{ update_form.hidden_tag() }}
-                    {{ update_form.first_name.label }}
-                    {{ update_form.first_name(class="form-control", value=player.profile.first_name) }}
+                    {{ update_player_form.csrf_token }}
+                    {{ update_player_form.first_name.label }}
+                    {{ update_player_form.first_name(class="form-control", value=player.profile.first_name) }}
                     <br/>
-                    {{ update_form.last_name.label }}
-                    {{ update_form.last_name(class="form-control", value=player.profile.last_name) }}
+                    {{ update_player_form.last_name.label }}
+                    {{ update_player_form.last_name(class="form-control", value=player.profile.last_name) }}
                     <br/>
-                    {{ update_form.position.label }}
-                    {{ update_form.position.process_data(player.profile.position) }}
-                    {{ update_form.position(class="form-control", value=player.profile.position.title()) }}
+                    {{ update_player_form.position.label }}
+                    {{ update_player_form.position.process_data(player.profile.position) }}
+                    {{ update_player_form.position(class="form-control", value=player.profile.position.title()) }}
                     <br>
-                    {{ update_form.number.label }}
-                    {{ update_form.number(class="form-control", value=player.profile.number) }}
+                    {{ update_player_form.old_number(value=player.profile.number) }}
+                    
+                    {{ update_player_form.number.label }}
+                    {{ update_player_form.number(class="form-control", value=player.profile.number) }}
                     <br/>
-                    {{ update_form.birth_date.label }}
-                    {{ update_form.birth_date(class="form-control", value=player.profile.birth_date) }}
+                    {{ update_player_form.birth_date.label }}
+                    {{ update_player_form.birth_date(class="form-control", value=player.profile.birth_date) }}
                     <br/>
                 </div>
                 <div class="modal-footer">
                     <input id="update_player" name="update_player" type="hidden" value="{{ player.profile.profile_id }}">
-                    {{ update_form.submit_update(class="btn btn-success", value="Save Changes") }}
+                    {{ update_player_form.submit(class="btn btn-success", value="Save Changes") }}
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </form>
@@ -51,10 +53,10 @@
             </div>
             <div class="modal-footer">
                 <div class="text-center">
-                    <form method="POST">
-                        {{ delete_form.csrf_token }}
-                        <input id="delete_player" name="delete_player" type="hidden" value="{{ player.user_id }}">
-                        {{ delete_form.submit_delete(class="btn btn-danger") }}
+                    <form action="{{ url_for('coach.delete_player') }}" method="POST">
+                        {{ delete_player_form.csrf_token }}
+                        {{ delete_player_form.delete_obj_id(value=player.user_id) }}
+                        {{ delete_player_form.submit(class="btn btn-danger") }}
                     </form>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Dismiss</button>
                 </div>

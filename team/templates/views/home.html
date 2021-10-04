@@ -44,28 +44,32 @@ Current Week Plan
                   </div>
                   <hr/>
                     {% if current_user.user_type == 'player' %}
-                      <div>
-                          <form method="POST">
-                              <input id="meeting_id" name="meeting_id"
-                                           type="hidden" value="{{ meeting.meeting_id }}">
-                              
-                              {% if current_user.profile not in (meeting.present_players.all() + meeting.absent_players.all()) %}
-                                    {{ present_form.csrf_token }}
-                                    <input id="present_player" name="present_player"
-                                           type="hidden" value="{{ current_user.user_id }}">
-                                    {{ present_form.submit_present(class="btn btn-success") }}
-                              
-                                    {{ absent_form.csrf_token }}
-                                    <input id="absent_player" name="absent_player"
-                                           type="hidden" value="{{ current_user.user_id }}">
-                                    {{ absent_form.submit_absent(class="btn btn-danger") }}
-                              {% else %}
+                      <div class="row">
+                          {% if current_user.profile not in (meeting.present_players.all() + meeting.absent_players.all()) %}
+                              <div class="col text-end">
+                              <form action="{{ url_for('views.present_like') }}" method="POST">
+                                        {{ present_form.csrf_token }}
+                                        {{ present_form.player_id(value=current_user.user_id) }}
+                                        {{ present_form.meeting_id(value=meeting.meeting_id) }}
+                                        {{ present_form.submit(class="btn btn-success", value='Present') }}
+                                  </form>
+                              </div>
+                              <div class="col text-start">
+                                  <form action="{{ url_for('views.absent_like') }}" method="POST">
+                                        {{ absent_form.csrf_token }}
+                                        {{ absent_form.player_id(value=current_user.user_id) }}
+                                        {{ absent_form.meeting_id(value=meeting.meeting_id) }}
+                                        {{ absent_form.submit(class="btn btn-danger", value='Absent') }}
+                                  </form>
+                              </div>
+                          {% else %}
+                              <form action="{{ url_for('views.undo_like') }}" method="POST">
                                     {{ undo_form.csrf_token }}
-                                    <input id="undo_player" name="undo_player"
-                                           type="hidden" value="{{ current_user.user_id }}">
-                                    {{ undo_form.submit_undo(class="btn btn-secondary") }}
-                              {% endif %}
-                            </form>
+                                    {{ undo_form.player_id(value=current_user.user_id) }}
+                                    {{ undo_form.meeting_id(value=meeting.meeting_id) }}
+                                    {{ undo_form.submit(class="btn btn-secondary", value='Undo') }}
+                              </form>
+                          {% endif %}
                       </div>
                     {% endif %}
               </div>
