@@ -19,28 +19,28 @@ Players
     </div>
     <br/>
     <div class="collapse" id="collapsePlayerCreator">
-        <form method="POST" class="form-control">
-            {{ add_player_form.hidden_tag() }}
-            {{ add_player_form.email_address.label }}
-            {{ add_player_form.email_address(class="form-control") }}
+        <form action="{{ url_for('coach.create_player') }}" method="POST" class="form-control">
+            {{ create_player_form.csrf_token }}
+            {{ create_player_form.email_address.label }}
+            {{ create_player_form.email_address(class="form-control") }}
             <br/>
-            {{ add_player_form.first_name.label }}
-            {{ add_player_form.first_name(class="form-control") }}
+            {{ create_player_form.first_name.label }}
+            {{ create_player_form.first_name(class="form-control") }}
             <br/>
-            {{ add_player_form.last_name.label }}
-            {{ add_player_form.last_name(class="form-control") }}
+            {{ create_player_form.last_name.label }}
+            {{ create_player_form.last_name(class="form-control") }}
             <br/>
-            {{ add_player_form.position.label }}
-            {{ add_player_form.position(class="form-control") }}
+            {{ create_player_form.position.label }}
+            {{ create_player_form.position(class="form-control") }}
             <br/>
-            {{ add_player_form.number.label }}
-            {{ add_player_form.number(class="form-control") }}
+            {{ create_player_form.number.label }}
+            {{ create_player_form.number(class="form-control") }}
             <br/>
-            {{ add_player_form.birth_date.label }}
-            {{ add_player_form.birth_date(class="form-control") }}
+            {{ create_player_form.birth_date.label }}
+            {{ create_player_form.birth_date(class="form-control") }}
             <br/>
             <div class="text-center">
-                {{ add_player_form.submit_create(class="btn btn-lg btn-block btn-success") }}
+                {{ create_player_form.submit(class="btn btn-lg btn-block btn-success", value="Create Player!") }}
             </div>
         </form>
     </div>

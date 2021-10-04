@@ -68,7 +68,7 @@ Home Page
     </div>
         <div class="text-center">
             {% if current_user.user_type == 'coach' %}
-                <a href="{{ url_for('creator.update_attendance_page', meeting_id=meeting.meeting_id) }}"
+                <a href="{{ url_for('coach.update_attendance_page', meeting_id=meeting.meeting_id) }}"
                     class="btn btn-lg btn-primary">Update</a>
             {% endif %}
             <a href="{{ url_for('views.attendance_page') }}"

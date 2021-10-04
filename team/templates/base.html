@@ -36,10 +36,10 @@
                         </li>
                         {% if current_user.user_type == 'coach' %}
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('creator.meetings_page') }}">Meetings</a>
+                                <a class="nav-link" href="{{ url_for('coach.meetings_page') }}">Meetings</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('creator.players_page') }}">Players</a>
+                                <a class="nav-link" href="{{ url_for('coach.players_page') }}">Players</a>
                             </li>
                         {% endif %}
                     </ul>

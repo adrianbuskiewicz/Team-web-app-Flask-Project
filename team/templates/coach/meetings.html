@@ -19,7 +19,7 @@ Meetings
     </div>
     <br/>
     <div class="collapse" id="collapseMeetingCreator">
-        <form method="POST" class="form-control">
+        <form action="{{ url_for('coach.create_meeting') }}" method="POST" class="form-control">
             {{ create_meeting_form.csrf_token }}
             {{ create_meeting_form.date.label }}
             {{ create_meeting_form.date(class="form-control") }}
@@ -37,7 +37,7 @@ Meetings
             {{ create_meeting_form.pitch(class="form-control") }}
             <br/>
             <div class="text-center">
-                {{ create_meeting_form.submit_create(class="btn btn-lg btn-block btn-success") }}
+                {{ create_meeting_form.submit(class="btn btn-lg btn-block btn-success") }}
             </div>
         </form>
     </div>
@@ -82,7 +82,7 @@ Meetings
                         Delete
                         </button>
                         <a class="btn btn-dark m-1"
-                            href="{{ url_for('creator.update_attendance_page', meeting_id=meeting.meeting_id) }}">
+                            href="{{ url_for('coach.update_attendance_page', meeting_id=meeting.meeting_id) }}">
                         Attendance
                         </a>
                     </td>

@@ -37,9 +37,9 @@ Update
                         <input id="present_player" name="present_player"
                             type="hidden" value="{{ player.profile_id }}">
                         {% if player not in meeting.attendance.all() %}
-                        {{ update_attendance_form.submit_update(class="btn btn-success") }}
+                        {{ update_attendance_form.submit(class="btn btn-success") }}
                         {% else %}
-                        {{ update_attendance_form.submit_update(class="btn btn-danger", value="Undo") }}
+                        {{ update_attendance_form.submit(class="btn btn-danger", value="Undo") }}
                         {% endif %}
                     </form>
                 </td>
