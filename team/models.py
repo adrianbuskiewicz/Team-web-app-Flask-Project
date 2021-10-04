@@ -71,16 +71,14 @@ class Meeting(db.Model):
     absent_players = db.relationship("Profile", secondary=absent_likes, lazy="dynamic")
 
 
-def delete_object(request_val, model, obj_id):
-    item_to_delete = request.form.get(request_val)
+def delete_object(item_to_delete, model, obj_id):
     del_item = model.query.filter_by(**{obj_id: item_to_delete}).first()
     if del_item:
         db.session.delete(del_item)
         db.session.commit()
 
 
-def add_to_table(request_val, model, meeting, table, obj_id):
-    record_id = request.form.get(request_val)
+def add_to_table(record_id, model, meeting, table, obj_id):
     record_to_add = model.query.filter_by(**{obj_id: record_id}).first()
     getattr(meeting, table).append(record_to_add)
     db.session.commit()
