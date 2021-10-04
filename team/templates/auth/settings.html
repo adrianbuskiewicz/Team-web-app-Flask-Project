@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Settings
+{% endblock %}
+
+{% block banner %}
+Settings
+{% endblock %}
+
+{% block content %}
+{% if current_user.user_type == 'player' %}
+<div class="container">
+    <div class="d-flex flex-column align-items-center text-center">
+        <img src="{{ url_for('static', filename='avatars/'+current_user.profile.avatar) }}"
+        alt="Avatar" class="rounded-circle" width="150">
+    </div>
+    </br>
+    <form method="POST" class="form-control text-center"
+    enctype="multipart/form-data">
+        {{ avatar_form.hidden_tag() }}
+        
+        {{ avatar_form.label }}
+        {{ avatar_form.avatar(class="form-control") }}
+        
+        <br/>
+        {{ avatar_form.submit_avatar(class="btn btn-lg btn-block btn-primary") }}
+    </form>
+</div>
+<br/>
+<br/>
+{% endif%}
+<div class="container">
+    <div class="text-center">
+        <button class="btn btn-lg btn-block btn-secondary" type="button"
+            data-bs-toggle="collapse" data-bs-target="#collapsePasswordChange"
+            aria-expanded="false" aria-controls="collapsePasswordChange">
+        Change Password
+        </button>
+    </div>
+    <br/>
+    <div class="collapse" id="collapsePasswordChange">
+        <form method="POST" class="form-control">
+            {{ change_password_form.hidden_tag() }}
+            
+            {{ change_password_form.old_password.label }}
+            {{ change_password_form.old_password(class="form-control") }}
+            
+            {{ change_password_form.new_password.label }}
+            {{ change_password_form.new_password(class="form-control") }}
+            
+            {{ change_password_form.confirm_password.label }}
+            {{ change_password_form.confirm_password(class="form-control") }}
+            
+            <br/>
+            <div class="text-center">
+                {{ change_password_form.submit_change(class="btn btn-lg btn-block btn-primary") }}
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

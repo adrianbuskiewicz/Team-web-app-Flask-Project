@@ -1,0 +1,129 @@
+<!-- Modal Present Players! -->
+<div class="modal fade" id="Modal-PresentPlayers-{{ meeting.meeting_id }}"
+    tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header text-dark bg-success">
+                <h5 class="modal-title" id="PresentPlayersModalLabel">
+                    {{ meeting.type.title() }} - {{ meeting.day }} ({{ meeting.hour }})
+                    <br/>
+                    Present Players:
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <table class="table border rounded-1">
+                        <tbody>
+                            {% for present_player in meeting.present_players %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex flex-column align-items-center">
+                                        <img src="{{ url_for('static', filename='avatars/'+present_player.avatar) }}"
+                                        alt="Avatar" class="rounded-circle" width="40">
+                                    </div>
+                                </td>
+                                <td>
+                                    <a class="text-dark"
+                                        href="{{ url_for('views.player_profile_page', player_id=present_player.profile_id) }}">
+                                        <h5>{{ present_player.first_name }} {{ present_player.last_name }}</h5>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Absent Players! -->
+<div class="modal fade" id="Modal-AbsentPlayers-{{ meeting.meeting_id }}"
+    tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header text-dark bg-danger">
+                <h5 class="modal-title" id="AbsentPlayersModalLabel">
+                    {{ meeting.type.title() }} - {{ meeting.day }} ({{ meeting.hour }})
+                    <br/>
+                    Absent Players:
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <table class="table border rounded-1">
+                        <tbody>
+                            {% for absent_player in meeting.absent_players %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex flex-column align-items-center">
+                                        <img src="{{ url_for('static', filename='avatars/'+absent_player.avatar) }}"
+                                        alt="Avatar" class="rounded-circle" width="40">
+                                    </div>
+                                </td>
+                                <td>
+                                    <a class="text-dark"
+                                        href="{{ url_for('views.player_profile_page', player_id=absent_player.profile_id) }}">
+                                        <h5>{{ absent_player.first_name }} {{ absent_player.last_name }}</h5>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Not Decided Players! -->
+<div class="modal fade" id="Modal-RestOfPlayers-{{ meeting.meeting_id }}"
+    tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header text-dark bg-secondary">
+                <h5 class="modal-title" id="RestOfPlayersModalLabel">
+                    {{ meeting.type.title() }} - {{ meeting.day }} ({{ meeting.hour }})
+                    <br/>
+                    Not Decided Players:
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <table class="table border rounded-1">
+                        <tbody>
+                            {% for player in all_players if player not in (meeting.present_players.all() + meeting.absent_players.all()) %}
+                            <tr>
+                                <td class="text-end">
+                                    <img src="{{ url_for('static', filename='avatars/'+player.avatar) }}"
+                                        alt="Avatar" class="rounded-circle" width="40">
+                                </td>
+                                <td class="text-start">
+                                    <a class="text-dark"
+                                        href="{{ url_for('views.player_profile_page', player_id=player.profile_id) }}">
+                                        <h5>{{ player.first_name }} {{ player.last_name }}</h5>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

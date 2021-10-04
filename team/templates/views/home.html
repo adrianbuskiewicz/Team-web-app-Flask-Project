@@ -4,6 +4,79 @@
 Home Page
 {% endblock %}
 
+{% block banner %}
+Current Week Plan
+{% endblock %}
+
 {% block content %}
-Home Page
+<div class="container">
+    <div class="card-group shadow-lg">
+        {% for meeting in meetings %}
+        {% include 'includes/like_wall_modals.html' %}
+            <div class="card text-center {{ 'text-light bg-dark' if meeting.type == 'match' else 'text-dark bg-light' }} m-1" style="min-width: 20rem;">
+                <div class="card-header">
+                    <h4>{{ meeting.type.title() }}</h4>
+                </div>
+                <div class="card-body align-middle">
+                  <div>
+                      <h4 class="card-title">{{ meeting.day }}</h4>
+                    <h4 class="card-title">{{ meeting.hour }}</h4>
+                      <hr/>
+                    <h5 class="card-title">{{ meeting.date.strftime("%d/%m/%Y") }}</h5>
+                      <hr/>
+                  </div>
+                  <h4><strong>Locality:</strong> {{ meeting.locality }}</h4>
+                  <h6>{{ meeting.pitch.title().replace("_", " ") }}</h6>
+                  <hr/>
+                  <div>
+                      <button class="btn btn-outline-success" data-bs-toggle="modal"
+                                data-bs-target="#Modal-PresentPlayers-{{ meeting.meeting_id }}">
+                          {{ meeting.present_players|list|length }}
+                      </button>
+                      <button class="btn btn-outline-danger" data-bs-toggle="modal"
+                                data-bs-target="#Modal-AbsentPlayers-{{ meeting.meeting_id }}">
+                          {{ meeting.absent_players|list|length }}
+                      </button>
+                      <button class="btn btn-outline-secondary" data-bs-toggle="modal"
+                                data-bs-target="#Modal-RestOfPlayers-{{ meeting.meeting_id }}">
+                          {{ all_players|list|length - meeting.present_players|list|length - meeting.absent_players|list|length}}
+                      </button>
+                  </div>
+                  <hr/>
+                    {% if current_user.user_type == 'player' %}
+                      <div class="row">
+                          {% if current_user.profile not in (meeting.present_players.all() + meeting.absent_players.all()) %}
+                              <div class="col text-end">
+                              <form action="{{ url_for('views.present_like') }}" method="POST">
+                                        {{ present_form.csrf_token }}
+                                        {{ present_form.player_id(value=current_user.user_id) }}
+                                        {{ present_form.meeting_id(value=meeting.meeting_id) }}
+                                        {{ present_form.submit(class="btn btn-success", value='Present') }}
+                                  </form>
+                              </div>
+                              <div class="col text-start">
+                                  <form action="{{ url_for('views.absent_like') }}" method="POST">
+                                        {{ absent_form.csrf_token }}
+                                        {{ absent_form.player_id(value=current_user.user_id) }}
+                                        {{ absent_form.meeting_id(value=meeting.meeting_id) }}
+                                        {{ absent_form.submit(class="btn btn-danger", value='Absent') }}
+                                  </form>
+                              </div>
+                          {% else %}
+                              <form action="{{ url_for('views.undo_like') }}" method="POST">
+                                    {{ undo_form.csrf_token }}
+                                    {{ undo_form.player_id(value=current_user.user_id) }}
+                                    {{ undo_form.meeting_id(value=meeting.meeting_id) }}
+                                    {{ undo_form.submit(class="btn btn-secondary", value='Undo') }}
+                              </form>
+                          {% endif %}
+                      </div>
+                    {% endif %}
+              </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+
 {% endblock %}
