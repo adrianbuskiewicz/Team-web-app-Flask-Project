@@ -339,9 +339,11 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
-team/database.db
 *.css
 *.jpg
 *.png
+
+
+.team/database.db
 team/database.db
-team/database.db
+*.db
