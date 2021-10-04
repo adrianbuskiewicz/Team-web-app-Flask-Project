@@ -5,7 +5,7 @@ Profile
 {% endblock %}
 
 {% block banner %}
-{% if current_user.profile.id == player.id %}
+{% if current_user.profile.profile_id == player.profile_id %}
 My Profile
 {% else %}
 {{ player.first_name }} {{ player.last_name }}
@@ -23,7 +23,8 @@ My Profile
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex flex-column align-items-center text-center">
-                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" width="150">
+                            <img src="{{ url_for('static', filename='avatars/'+player.avatar) }}"
+                                 alt="Avatar" class="rounded-circle" width="150">
                             <div class="mt-3">
                                 <h4>{{ player.first_name }} {{ player.last_name }}</h4>
                             </div>
@@ -36,74 +37,74 @@ My Profile
                     <div class="card-body">
                         <div class="row">
                             <div class="col-sm-5">
-                                <h6 class="mb-0">Position</h6>
+                                <h6 class="mb-0"><strong>Position</strong></h6>
                             </div>
-                            <div class="col-sm-5 text-secondary">
+                            <div class="col-sm-5 text-dark">
                                 {{ player.position.title() }}
                             </div>
                         </div>
                         <hr>
                         <div class="row">
                             <div class="col-sm-5">
-                                <h6 class="mb-0">Number</h6>
+                                <h6 class="mb-0"><strong>Number</strong></h6>
                             </div>
-                            <div class="col-sm-5 text-secondary">
+                            <div class="col-sm-5 text-dark">
                                 {{ player.number }}
                             </div>
                         </div>
                         <hr>
                         <div class="row">
                             <div class="col-sm-5">
-                                <h6 class="mb-0">Birth Date</h6>
+                                <h6 class="mb-0"><strong>Age</strong></h6>
                             </div>
-                            <div class="col-sm-5 text-secondary">
-                                {{ player.birth_date }}
+                            <div class="col-sm-5 text-dark">
+                                {{ age }}
                             </div>
                         </div>
                         <hr>
                         <div class="row">
                             <div class="col-sm-5">
-                                <h6 class="mb-0">Attendance (%)</h6>
+                                <h6 class="mb-0"><strong>Attendance (%)</strong></h6>
                             </div>
-                            <div class="col-sm-5 text-secondary">
-                                60%
+                            <div class="col-sm-5 text-dark">
+                                {{ attendance_percentage }}
                             </div>
                         </div>
-                        {% if current_user.profile.id == player.id %}
-                            <hr>
-                            <div class="row">
-                                <div class="btn btn-danger">
-                                  Edit profile information!
-                                </div>
-                            </div>
-                        {% endif %}
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<table class="table table-bordered text-center">
-  <thead>
-    <tr>
-      <th scope="col">Date</th>
-      <th scope="col">Type</th>
-      <th scope="col">Attendance</th>
-    </tr>
-  </thead>
-  <tbody>
-  {% for meeting in meetings %}
-    <tr>
-      <td>{{ meeting.date }}</td>
-      <td>{{ meeting.type.title() }}</td>
-      <td>
-        <div class="btn btn-success disabled" style="cursor:default;">
-          Present
-        </div>
-      </td>
-    </tr>
-    {% endfor %}
-    </tr>
-  </tbody>
-</table>
+<div class="container">
+    <table class="table table-bordered table-striped align-middle text-center">
+      <thead class="table-dark">
+        <tr>
+          <th scope="col">Date</th>
+          <th scope="col">Type</th>
+          <th scope="col">Attendance</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for meeting in meetings %}
+        <tr class="">
+            <td><strong>{{ meeting.date.strftime("%d/%m/%Y") }}</strong></td>
+          <td>{{ meeting.type.title() }}</td>
+          <td>
+              {% if player in meeting.attendance %}
+                    <div class="btn btn-success disabled">
+                      Present
+                    </div>
+              {% else %}
+                    <div class="btn btn-danger disabled">
+                      Absent
+                    </div>
+              {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+        </tr>
+      </tbody>
+    </table>
+</div>
 {% endblock %}
