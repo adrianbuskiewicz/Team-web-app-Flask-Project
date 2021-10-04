@@ -85,3 +85,5 @@ def create_app(test_config=None):
 def create_database(app_path, app):
     if not os.path.exists(f"{app_path}/{DB_NAME}"):
         db.create_all(app=app)
+        
+        #Comment
