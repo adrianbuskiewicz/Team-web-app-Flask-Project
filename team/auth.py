@@ -8,7 +8,7 @@ from team import mail
 from flask_mail import Message
 from team import db
 import os
-import re
+
 
 auth = Blueprint("auth", __name__, url_prefix="/")
 
