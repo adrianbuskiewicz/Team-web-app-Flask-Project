@@ -2,9 +2,8 @@ from flask import Blueprint, render_template, url_for, request, redirect
 from team.models import Profile, Meeting, add_to_table
 from flask_login import login_required
 from team.dates import today, start_of_week, end_of_week, weekdays_tuple
-from team.forms import PresentForm, AbsentForm, UndoForm, pitch_positions
+from team.forms import LikeForm, pitch_positions
 from team import db
-import sys
 
 views = Blueprint("views", __name__, url_prefix="/")
 
@@ -15,49 +14,9 @@ views = Blueprint("views", __name__, url_prefix="/")
 def home_page():
     meetings = Meeting.query.order_by(Meeting.date).filter(Meeting.date.between(start_of_week, end_of_week))
     all_players = Profile.query.all()
-    present_form = PresentForm()
-    absent_form = AbsentForm()
-    undo_form = UndoForm()
-
-    if present_form.submit_present.data:
-        meeting_id = request.form.get("meeting_id")
-        meeting = Meeting.query.filter_by(meeting_id=meeting_id).first()
-        add_to_table(
-            request_val="present_player",
-            model=Profile,
-            meeting=meeting,
-            table="present_players",
-            obj_id="user_id",
-        )
-        return redirect(url_for("views.home_page"))
-
-    if absent_form.submit_absent.data:
-        meeting_id = request.form.get("meeting_id")
-        meeting = Meeting.query.filter_by(meeting_id=meeting_id).first()
-        add_to_table(
-            request_val="absent_player",
-            model=Profile,
-            meeting=meeting,
-            table="absent_players",
-            obj_id="user_id",
-        )
-        return redirect(url_for("views.home_page"))
-
-    if undo_form.submit_undo.data:
-        meeting_id = request.form.get("meeting_id")
-        meeting = Meeting.query.filter_by(meeting_id=meeting_id).first()
-        player_id = request.form.get("undo_player")
-        player_to_del = Profile.query.filter_by(user_id=player_id).first()
-
-        if meeting.present_players.filter_by(profile_id=player_to_del.profile_id).first():
-            meeting.present_players.remove(player_to_del)
-            db.session.commit()
-            return redirect(url_for("views.home_page"))
-
-        elif meeting.absent_players.filter_by(profile_id=player_to_del.profile_id).first():
-            meeting.absent_players.remove(player_to_del)
-            db.session.commit()
-            return redirect(url_for("views.home_page"))
+    present_form = LikeForm()
+    absent_form = LikeForm()
+    undo_form = LikeForm()
 
     return render_template(
         "views/home.html",
@@ -68,6 +27,62 @@ def home_page():
         undo_form=undo_form,
         all_players=all_players,
     )
+
+
+@views.route("/home/present-like", methods=["POST"])
+@login_required
+def present_like():
+    present_form = LikeForm()
+    if present_form.submit.data:
+        meeting_id = present_form.meeting_id.data
+        meeting = Meeting.query.filter_by(meeting_id=meeting_id).first()
+        add_to_table(
+            record_id=present_form.player_id.data,
+            model=Profile,
+            meeting=meeting,
+            table="present_players",
+            obj_id="user_id",
+        )
+        return redirect(url_for("views.home_page"))
+    return redirect(url_for("views.home_page"))
+
+
+@views.route("/home/absent-like", methods=["POST"])
+@login_required
+def absent_like():
+    absent_form = LikeForm()
+    if absent_form.submit.data:
+        meeting_id = absent_form.meeting_id.data
+        meeting = Meeting.query.filter_by(meeting_id=meeting_id).first()
+        add_to_table(
+            record_id=absent_form.player_id.data,
+            model=Profile,
+            meeting=meeting,
+            table="absent_players",
+            obj_id="user_id",
+        )
+        return redirect(url_for("views.home_page"))
+    return redirect(url_for("views.home_page"))
+
+
+@views.route("/home/undo-like", methods=["POST"])
+@login_required
+def undo_like():
+    undo_form = LikeForm()
+    if undo_form.submit.data:
+        meeting_id = undo_form.meeting_id.data
+        meeting = Meeting.query.filter_by(meeting_id=meeting_id).first()
+        player_id = undo_form.player_id.data
+        player_to_del = Profile.query.filter_by(user_id=player_id).first()
+        if meeting.present_players.filter_by(profile_id=player_to_del.profile_id).first():
+            meeting.present_players.remove(player_to_del)
+            db.session.commit()
+            return redirect(url_for("views.home_page"))
+        elif meeting.absent_players.filter_by(profile_id=player_to_del.profile_id).first():
+            meeting.absent_players.remove(player_to_del)
+            db.session.commit()
+            return redirect(url_for("views.home_page"))
+    return redirect(url_for("views.home_page"))
 
 
 @views.route("/squad", methods=["GET", "POST"])
