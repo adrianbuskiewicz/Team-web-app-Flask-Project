@@ -2,8 +2,10 @@ import os
 from flask import Flask, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
-from flask_mail import Mail
+from flask_mail import Mail, Message
 from werkzeug.security import generate_password_hash
+import string
+import secrets
 
 db = SQLAlchemy()
 DB_NAME = "database.db"
@@ -45,11 +47,11 @@ def create_app(test_config=None):
 
     from team.auth import auth
     from team.views import views
-    from team.creator import creator
+    from team.coach import coach
 
     app.register_blueprint(auth)
     app.register_blueprint(views)
-    app.register_blueprint(creator)
+    app.register_blueprint(coach)
 
     from team.models import User, Profile
 
@@ -62,14 +64,21 @@ def create_app(test_config=None):
     @app.before_first_request
     def create_coach_user():
         if not User.query.filter_by(email_address='coach@wp.pl').first():
+            alphabet = string.ascii_letters + string.digits
+            password = "".join(secrets.choice(alphabet) for _ in range(8))
             coach_user = User(
-                email_address='coach@wp.pl',
-                password_hash=generate_password_hash('coach'),
+                email_address=input("Email: "),
+                password_hash=generate_password_hash(password),
                 user_type='coach',
             )
+            msg = Message('Team web app - Your account was created!',
+                          sender='team2@mailtrap.io',
+                          recipients=[coach_user.email_address])
+            msg.body = f"Hey, we created an account for you!\nIt's your password: {password}\nYou can change it in " \
+                       f"account settings! "
+            mail.send(msg)
             db.session.add(coach_user)
             db.session.commit()
-
     return app
 
 
