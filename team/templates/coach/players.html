@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Add Player
+{% endblock %}
+
+{% block banner %}
+Players
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="text-center">
+        <button class="btn btn-lg btn-block btn-primary" type="button"
+            data-bs-toggle="collapse" data-bs-target="#collapsePlayerCreator"
+            aria-expanded="false" aria-controls="collapsePlayerCreator">
+        Create new player!
+        </button>
+    </div>
+    <br/>
+    <div class="collapse" id="collapsePlayerCreator">
+        <form action="{{ url_for('coach.create_player') }}" method="POST" class="form-control">
+            {{ create_player_form.csrf_token }}
+            {{ create_player_form.email_address.label }}
+            {{ create_player_form.email_address(class="form-control") }}
+            <br/>
+            {{ create_player_form.first_name.label }}
+            {{ create_player_form.first_name(class="form-control") }}
+            <br/>
+            {{ create_player_form.last_name.label }}
+            {{ create_player_form.last_name(class="form-control") }}
+            <br/>
+            {{ create_player_form.position.label }}
+            {{ create_player_form.position(class="form-control") }}
+            <br/>
+            {{ create_player_form.number.label }}
+            {{ create_player_form.number(class="form-control") }}
+            <br/>
+            {{ create_player_form.birth_date.label }}
+            {{ create_player_form.birth_date(class="form-control") }}
+            <br/>
+            <div class="text-center">
+                {{ create_player_form.submit(class="btn btn-lg btn-block btn-success", value="Create Player!") }}
+            </div>
+        </form>
+    </div>
+</div>
+<br/>
+<div class="container">
+    {% for position in positions %}
+    <table class="table table-striped text-center" style="border-collapse: separate; border-spacing: 0 0.5em;">
+        <thead class="table-dark align-middle">
+            <h3>{{ position.title() }}s</h3>
+            <tr>
+                <th scope="col">Number</th>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col">Birth Date</th>
+                <th scope="col" class="text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="align-middle">
+            {% for player in players if player.profile.position == position %}
+            {% include 'includes/players_modals.html' %}
+            <tr>
+                <td><strong>{{ player.profile.number }}</strong></td>
+                <td>{{ player.profile.first_name }}</td>
+                <td>{{ player.profile.last_name }}</td>
+                <td>{{ player.profile.birth_date }}</td>
+                {% if current_user.user_type == 'coach' %}
+                <td class="text-center">
+                    <button class="btn btn-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#Modal-ChangePlayer-{{ player.user_id }}">
+                    Change
+                    </button>
+                    <button class="btn btn-danger"
+                        data-bs-toggle="modal"
+                        data-bs-target="#Modal-DeletePlayer-{{ player.user_id }}">
+                    Delete
+                    </button>
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endfor %}
+</div>
+{% endblock %}
