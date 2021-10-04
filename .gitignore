@@ -3,6 +3,7 @@ instance/*
 !instance/.gitignore
 .webassets-cache
 .env
+database.db
 
 ### Flask.Python Stack ###
 # Byte-compiled / optimized / DLL files
@@ -338,3 +339,11 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+*.css
+*.jpg
+*.png
+
+
+.team/database.db
+team/database.db
+*.db
