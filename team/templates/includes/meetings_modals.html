@@ -1,56 +1,66 @@
 <!-- Modal Change Meeting -->
-<div class="modal fade" id="Modal-ChangeMeeting-{{ meeting.id }}" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="ChangeMeetingModalLabel">
-          Change:
-          {{ meeting.type.title() }} ({{ meeting.date }} - {{ meeting.hour }})
-        </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        {{ update_form.date.label }}
-        {{ update_form.date(class="form-control", value=meeting.date) }}
-        <br/>
-        {{ update_form.hour.label }}
-        {{ update_form.hour(class="form-control", value=meeting.hour) }}
-        <br/>
-        {{ update_form.locality.label }}
-        {{ update_form.locality(class="form-control", value=meeting.locality) }}
-        <br/>
-        {{ update_form.type.label }}
-        {{ update_form.type(class="form-control", default=meeting.type) }}
-        <br/>
-        {{ update_form.pitch.label }}
-        {{ update_form.pitch(class="form-control", value=meeting.pitch) }}
-        <br/>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary">Save changes</button>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-      </div>
+<div class="modal fade" id="Modal-ChangeMeeting-{{ meeting.meeting_id }}" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ChangeMeetingModalLabel">
+                    Change:
+                    {{ meeting.type.title() }} ({{ meeting.date }} - {{ meeting.hour }})
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('coach.update_meeting') }}" method="POST">
+                <div class="modal-body">
+                    {{ update_meeting_form.csrf_token }}
+                    {{ update_meeting_form.date.label }}
+                    {{ update_meeting_form.date(class="form-control", value=meeting.date) }}
+                    <br/>
+                    {{ update_meeting_form.hour.label }}
+                    {{ update_meeting_form.hour(class="form-control", value=meeting.hour) }}
+                    <br/>
+                    {{ update_meeting_form.locality.label }}
+                    {{ update_meeting_form.locality(class="form-control", value=meeting.locality) }}
+                    <br/>
+                    {{ update_meeting_form.type.label }}
+                    {{ update_meeting_form.type.process_data(meeting.type) }}
+                    {{ update_meeting_form.type(class="form-control") }}
+                    <br/>
+                    {{ update_meeting_form.pitch.label }}
+                    {{ update_meeting_form.pitch.process_data(meeting.pitch) }}
+                    {{ update_meeting_form.pitch(class="form-control", value=meeting.pitch) }}
+                    <br/>
+                </div>
+                <div class="modal-footer">
+                    <input id="update_meeting" name="update_meeting" type="hidden" value="{{ meeting.meeting_id }}">
+                    {{ update_meeting_form.submit(class="btn btn-success", value="Save Changes") }}
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
     </div>
-  </div>
 </div>
 
-<!-- Delete Meeting -->
-<div class="modal fade" id="Modal-DeleteMeeting-{{ meeting.id }}" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="DeleteMeetingModalLabel">Delete Meeting</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <hp>Are you sure you want to delete meeting?</hp>
-      </div>
-      <div class="modal-footer">
-        <div class="text-center">
-          <button type="button" class="btn btn-danger">Confirm</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Dismiss</button>
+<!-- Modal Delete Meeting -->
+<div class="modal fade" id="Modal-DeleteMeeting-{{ meeting.meeting_id }}" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="DeleteMeetingModalLabel">Delete Meeting</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete meeting - {{ meeting.date }} ({{ meeting.hour }})?</p>
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <form action="{{ url_for('coach.delete_meeting') }}" method="POST">
+                        {{ delete_meeting_form.csrf_token }}
+                        {{ delete_meeting_form.delete_obj_id(value=meeting.meeting_id) }}
+                        {{ delete_meeting_form.submit(class="btn btn-danger") }}
+                    </form>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Dismiss</button>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>
