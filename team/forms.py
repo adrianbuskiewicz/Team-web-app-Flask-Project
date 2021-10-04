@@ -1,12 +1,11 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField
-from wtforms import StringField, SelectField, PasswordField, SubmitField, IntegerField
+from wtforms import StringField, SelectField, PasswordField, SubmitField, IntegerField, HiddenField
 from wtforms.fields.html5 import DateField
 from wtforms_components import TimeField
 from wtforms.validators import Length, DataRequired, Email, ValidationError, EqualTo
 from flask import flash
 from team.models import User, Profile
-from team.dates import today
 
 positions_choices = [
     ("goalkeeper", "Goalkeeper"),
@@ -32,22 +31,31 @@ class LoginForm(FlaskForm):
     submit = SubmitField("Login")
 
 
-class AddPlayerForm(FlaskForm):
-    email_address = StringField(
-        "Email address", validators=[Length(min=2, max=40), DataRequired(), Email()]
-    )
+class PlayerForm(FlaskForm):
     first_name = StringField(
         "First name", validators=[Length(min=2, max=20), DataRequired()]
     )
     last_name = StringField(
         "Last name", validators=[Length(min=2, max=20), DataRequired()]
     )
-    birth_date = DateField("Birth date", default=today)
+    birth_date = DateField("Birth date", validators=[DataRequired()])
     position = SelectField(
         "Position", choices=positions_choices, validators=[DataRequired()]
     )
     number = IntegerField("Number", validators=[DataRequired()])
-    submit_create = SubmitField("Create player!")
+    old_number = HiddenField()
+    submit = SubmitField()
+
+    def validate_number(self, number_to_check):
+        number = Profile.query.filter_by(number=number_to_check.data).first()
+        if number and (str(number_to_check.data) != self.old_number.data):
+            raise ValidationError(f"Player {number.first_name} {number.last_name} already has this number!")
+
+
+class CreatePlayerForm(PlayerForm):
+    email_address = StringField(
+        "Email address", validators=[Length(min=2, max=40), DataRequired(), Email()]
+    )
 
     def validate_email_address(self, email_address_to_check):
         email_address = User.query.filter_by(
@@ -56,22 +64,8 @@ class AddPlayerForm(FlaskForm):
         if email_address:
             raise ValidationError("Email address already exists!")
 
-    def validate_number(self, number_to_check):
-        number = Profile.query.filter_by(number=number_to_check.data).first()
-        if number:
-            raise ValidationError("Some player already has this number!")
 
-
-class UpdatePlayerForm(FlaskForm):
-    first_name = StringField("First name", validators=[Length(min=2, max=20)])
-    last_name = StringField("Last name", validators=[Length(min=2, max=20)])
-    birth_date = DateField("Birth date")
-    position = SelectField("Position", choices=positions_choices)
-    number = IntegerField("Number")
-    submit_update = SubmitField("Update player!")
-
-
-class CreateMeetingForm(FlaskForm):
+class MeetingForm(FlaskForm):
     date = DateField("Date", validators=[DataRequired()])
     hour = TimeField("Hour", validators=[DataRequired()])
     type = SelectField("Type", choices=type_choices, validators=[DataRequired()])
@@ -79,36 +73,22 @@ class CreateMeetingForm(FlaskForm):
         "Locality", validators=[Length(min=2, max=20), DataRequired()]
     )
     pitch = SelectField("Pitch", choices=pitch_choices, validators=[DataRequired()])
-    submit_create = SubmitField("Create meeting!")
-
-
-class UpdateMeetingForm(FlaskForm):
-    date = DateField("Date")
-    hour = TimeField("Hour")
-    type = SelectField("Type", choices=type_choices)
-    locality = StringField("Locality", validators=[Length(min=2, max=20)])
-    pitch = SelectField("Pitch", choices=pitch_choices)
-    submit_update = SubmitField("Update meeting!")
+    submit = SubmitField()
 
 
 class UpdateAttendanceForm(FlaskForm):
-    submit_update = SubmitField("Present")
+    submit = SubmitField("Present")
 
 
 class DeleteForm(FlaskForm):
-    submit_delete = SubmitField("Confirm")
+    delete_obj_id = HiddenField()
+    submit = SubmitField("Confirm")
 
 
-class PresentForm(FlaskForm):
-    submit_present = SubmitField("Present")
-
-
-class AbsentForm(FlaskForm):
-    submit_absent = SubmitField("Absent")
-
-
-class UndoForm(FlaskForm):
-    submit_undo = SubmitField("Undo")
+class LikeForm(FlaskForm):
+    player_id = HiddenField()
+    meeting_id = HiddenField()
+    submit = SubmitField("Present")
 
 
 class ForgotPasswordForm(FlaskForm):
