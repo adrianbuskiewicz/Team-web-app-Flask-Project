@@ -13,25 +13,13 @@ DB_NAME = "database.db"
 mail = Mail()
 
 
-def create_app(test_config=None):
+def create_app():
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
-        SECRET_KEY="dev",
         SQLALCHEMY_DATABASE_URI=f"sqlite:///{DB_NAME}",
-        MAIL_SERVER='smtp.mailtrap.io',
-        MAIL_PORT=2525,
-        MAIL_USERNAME='3ed64a2c3a31da',
-        MAIL_PASSWORD='8cfbd4b9483388',
-        MAIL_USE_TLS=True,
-        MAIL_USE_SSL=False,
-        MAX_CONTENT_LENGTH=1024*1024,
-        UPLOAD_EXTENSIONS=['.jpg', '.png'],
     )
 
-    if test_config is None:
-        app.config.from_pyfile("config.py", silent=True)
-    else:
-        app.config.update(test_config)
+    app.config.from_object("config.Config")
 
     try:
         os.makedirs(app.instance_path)
